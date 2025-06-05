@@ -112,15 +112,15 @@ export default function TodoItem({
 
   return (
     <div className={cn(
-      "bg-white rounded-lg shadow-sm border border-gray-200 p-4 transition-all",
+      "bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 transition-all",
       todo.completed && "opacity-75"
     )}>
-      <div className="flex items-start space-x-3">
+      <div className="flex items-start space-x-2 sm:space-x-3">
         {/* Checkbox */}
         <button
           onClick={handleToggle}
           className={cn(
-            "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+            "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5",
             todo.completed 
               ? "bg-green-500 border-green-500 text-white" 
               : "border-gray-300 hover:border-green-400"
@@ -133,41 +133,43 @@ export default function TodoItem({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h3 className={cn(
-            "text-lg font-medium text-gray-900",
+            "text-base sm:text-lg font-medium text-gray-900 break-words",
             todo.completed && "line-through text-gray-500"
           )}>
             {todo.title}
           </h3>
           {todo.description && (
             <p className={cn(
-              "mt-1 text-gray-600",
+              "mt-1 text-sm sm:text-base text-gray-600 break-words",
               todo.completed && "line-through text-gray-400"
             )}>
               {todo.description}
             </p>
           )}
-          <div className="mt-2 flex items-center text-sm text-gray-500">
-            <ClockIcon className="h-4 w-4 mr-1" />
-            <span>Created {formatDate(todo.createdAt)}</span>
+          <div className="mt-2 flex items-center text-xs sm:text-sm text-gray-500">
+            <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+            <span className="truncate">Created {formatDate(todo.createdAt)}</span>
             {todo.updatedAt !== todo.createdAt && (
-              <span className="ml-2">• Updated {formatDate(todo.updatedAt)}</span>
+              <span className="ml-2 hidden sm:inline">• Updated {formatDate(todo.updatedAt)}</span>
             )}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex-shrink-0 flex items-center space-x-2">
+        <div className="flex-shrink-0 flex items-center space-x-1 sm:space-x-2">
           <button
             onClick={() => setIsEditing(true)}
-            className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+            className="p-1 sm:p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
             disabled={isLoading}
+            aria-label="Edit todo"
           >
             <PencilIcon className="h-4 w-4" />
           </button>
           <button
             onClick={handleDelete}
-            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+            className="p-1 sm:p-1.5 text-gray-400 hover:text-red-600 transition-colors"
             disabled={isLoading}
+            aria-label="Delete todo"
           >
             <TrashIcon className="h-4 w-4" />
           </button>

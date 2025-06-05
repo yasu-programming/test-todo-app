@@ -1,0 +1,16 @@
+{
+  "name": "todo-backend",
+  "build": {
+    "commands": [
+      "npm install",
+      "npm run build"
+    ]
+  },
+  "start": {
+    "command": "npm run start:prod"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3001"
+  }
+}

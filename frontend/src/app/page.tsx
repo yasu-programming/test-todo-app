@@ -11,7 +11,7 @@ export default function Home() {
   const { todos, isLoading, error, createTodo, updateTodo, deleteTodo, toggleTodo } = useTodos();
   const [filters, setFilters] = useState<TodoFilters>({ status: 'all' });
 
-  const handleUpdateTodo = async (id: string, updates: { title?: string; description?: string }) => {
+  const handleUpdateTodo = async (id: number, updates: { title?: string; description?: string }) => {
     await updateTodo(id, updates);
   };
 

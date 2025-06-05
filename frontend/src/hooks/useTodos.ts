@@ -17,7 +17,7 @@ export function useTodos() {
   const createTodo = async (input: CreateTodoInput) => {
     // Optimistic update
     const tempTodo: Todo = {
-      id: `temp-${Date.now()}`,
+      id: Date.now(), // Use number for temp ID
       title: input.title,
       description: input.description,
       completed: false,
@@ -42,7 +42,7 @@ export function useTodos() {
     }
   };
 
-  const updateTodo = async (id: string, input: UpdateTodoInput) => {
+  const updateTodo = async (id: number, input: UpdateTodoInput) => {
     // Optimistic update
     const updatedTodos = todos.map(todo =>
       todo.id === id
@@ -63,7 +63,7 @@ export function useTodos() {
     }
   };
 
-  const deleteTodo = async (id: string) => {
+  const deleteTodo = async (id: number) => {
     // Optimistic update
     const filteredTodos = todos.filter(todo => todo.id !== id);
     mutate(TODO_KEY, filteredTodos, false);
@@ -78,7 +78,7 @@ export function useTodos() {
     }
   };
 
-  const toggleTodo = async (id: string) => {
+  const toggleTodo = async (id: number) => {
     // Optimistic update
     const updatedTodos = todos.map(todo =>
       todo.id === id

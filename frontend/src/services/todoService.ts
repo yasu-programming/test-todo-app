@@ -1,95 +1,77 @@
+import axios from 'axios';
 import { Todo, CreateTodoInput, UpdateTodoInput } from '@/types/todo';
 
-// Mock data for development
-const mockTodos: Todo[] = [
-  {
-    id: '1',
-    title: 'Learn Next.js App Router',
-    description: 'Study the new App Router features in Next.js 13+',
-    completed: false,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-  },
-  {
-    id: '2',
-    title: 'Build Todo App',
-    description: 'Create a full-featured todo application with TypeScript',
-    completed: false,
-    createdAt: new Date('2024-01-02'),
-    updatedAt: new Date('2024-01-02'),
-  },
-  {
-    id: '3',
-    title: 'Setup Tailwind CSS',
-    description: 'Configure Tailwind CSS for styling',
-    completed: true,
-    createdAt: new Date('2024-01-03'),
-    updatedAt: new Date('2024-01-03'),
-  },
-];
+// API configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-// Simple in-memory storage for development
-const todos: Todo[] = [...mockTodos];
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
 
-// Simulate API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// Add response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    throw error;
+  }
+);
 
 export const todoService = {
   async getTodos(): Promise<Todo[]> {
-    await delay(500); // Simulate network delay
-    return [...todos];
+    const response = await api.get<Todo[]>('/todos');
+    return response.data.map(todo => ({
+      ...todo,
+      createdAt: new Date(todo.createdAt),
+      updatedAt: new Date(todo.updatedAt),
+    }));
   },
 
   async createTodo(input: CreateTodoInput): Promise<Todo> {
-    await delay(300);
-    const newTodo: Todo = {
-      id: Date.now().toString(),
-      title: input.title,
-      description: input.description,
-      completed: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    const response = await api.post<Todo>('/todos', input);
+    return {
+      ...response.data,
+      createdAt: new Date(response.data.createdAt),
+      updatedAt: new Date(response.data.updatedAt),
     };
-    todos.push(newTodo);
-    return newTodo;
   },
 
-  async updateTodo(id: string, input: UpdateTodoInput): Promise<Todo> {
-    await delay(300);
-    const todoIndex = todos.findIndex(todo => todo.id === id);
-    if (todoIndex === -1) {
-      throw new Error('Todo not found');
-    }
-    
-    todos[todoIndex] = {
-      ...todos[todoIndex],
-      ...input,
-      updatedAt: new Date(),
+  async updateTodo(id: number, input: UpdateTodoInput): Promise<Todo> {
+    const response = await api.put<Todo>(`/todos/${id}`, input);
+    return {
+      ...response.data,
+      createdAt: new Date(response.data.createdAt),
+      updatedAt: new Date(response.data.updatedAt),
     };
-    return todos[todoIndex];
   },
 
-  async deleteTodo(id: string): Promise<void> {
-    await delay(300);
-    const todoIndex = todos.findIndex(todo => todo.id === id);
-    if (todoIndex === -1) {
-      throw new Error('Todo not found');
-    }
-    todos.splice(todoIndex, 1);
+  async deleteTodo(id: number): Promise<void> {
+    await api.delete(`/todos/${id}`);
   },
 
-  async toggleTodo(id: string): Promise<Todo> {
-    await delay(300);
-    const todoIndex = todos.findIndex(todo => todo.id === id);
-    if (todoIndex === -1) {
-      throw new Error('Todo not found');
-    }
-    
-    todos[todoIndex] = {
-      ...todos[todoIndex],
-      completed: !todos[todoIndex].completed,
-      updatedAt: new Date(),
+  async toggleTodo(id: number): Promise<Todo> {
+    // First get the current todo to know its current state
+    const currentTodo = await this.getTodoById(id);
+    const response = await api.put<Todo>(`/todos/${id}`, {
+      completed: !currentTodo.completed,
+    });
+    return {
+      ...response.data,
+      createdAt: new Date(response.data.createdAt),
+      updatedAt: new Date(response.data.updatedAt),
     };
-    return todos[todoIndex];
+  },
+
+  async getTodoById(id: number): Promise<Todo> {
+    const response = await api.get<Todo>(`/todos/${id}`);
+    return {
+      ...response.data,
+      createdAt: new Date(response.data.createdAt),
+      updatedAt: new Date(response.data.updatedAt),
+    };
   },
 };

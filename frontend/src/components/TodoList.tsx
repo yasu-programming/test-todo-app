@@ -6,9 +6,9 @@ import TodoItem from './TodoItem';
 interface TodoListProps {
   todos: Todo[];
   filters: TodoFilters;
-  onUpdateTodo: (id: string, updates: { title?: string; description?: string }) => Promise<void>;
-  onToggleTodo: (id: string) => Promise<void | Todo>;
-  onDeleteTodo: (id: string) => Promise<void>;
+  onUpdateTodo: (id: number, updates: { title?: string; description?: string }) => Promise<void>;
+  onToggleTodo: (id: number) => Promise<void | Todo>;
+  onDeleteTodo: (id: number) => Promise<void>;
 }
 
 export default function TodoList({ 

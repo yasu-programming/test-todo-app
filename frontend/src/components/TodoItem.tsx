@@ -5,9 +5,9 @@ import { Todo } from '@/types/todo';
 
 interface TodoItemProps {
   todo: Todo;
-  onUpdate: (id: string, updates: { title?: string; description?: string }) => Promise<void>;
-  onToggle: (id: string) => Promise<void | Todo>;
-  onDelete: (id: string) => Promise<void>;
+  onUpdate: (id: number, updates: { title?: string; description?: string }) => Promise<void>;
+  onToggle: (id: number) => Promise<void | Todo>;
+  onDelete: (id: number) => Promise<void>;
 }
 
 export default function TodoItem({ todo, onUpdate, onToggle, onDelete }: TodoItemProps) {
